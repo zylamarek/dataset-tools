@@ -1,0 +1,2 @@
+class WhiteBackground:
+    pass
