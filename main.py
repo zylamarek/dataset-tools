@@ -1,25 +1,24 @@
 import argparse
 
-import filters
-import functions
+import operations.filters
+import operations.functions
+import utils
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--path_in', type=str)
-parser.add_argument('--filter', type=str, nargs='+', choices=filters.__all__,
-                    help='filters to apply')
-parser.add_argument('--resize', type=int)
+parser.add_argument('path_in', type=str)
+parser.add_argument('operations', type=str, nargs='+',
+                    help='filters %s and functions %s to apply' % \
+                         (str(operations.filters.__all__), str(operations.functions.__all__)))
 args = parser.parse_args()
 
 path_in = args.path_in
 
-if args.filter is not None:
-    for i_filter, filter_name in enumerate(args.filter):
-        filter = getattr(filters, filter_name)(path_in=path_in, prepend_name='%d_' % i_filter,
-                                               include_failed=True)
-        filter.apply()
-        filter.stats()
-        path_in = filter.path_out
+op_stack = [(i,) + utils.interpret_op(operation_txt) for i, operation_txt in enumerate(args.operations)]
+print('Interpreted op stack:')
+print(' -> '.join(['%d_%s(' % (i, operation_name) + ','.join(args) + ')'
+                   for i, operation_name, args in op_stack]))
 
-if args.resize is not None:
-    func = functions.Resize(path_in=path_in, size=args.resize)
-    func.apply()
+for i_operation, operation_name, args in op_stack:
+    operation = getattr(operations, operation_name)(*args, path_in=path_in, prepend_name='%d_' % i_operation)
+    operation.apply()
+    path_in = operation.path_out

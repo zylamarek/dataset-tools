@@ -33,7 +33,6 @@ class Dataset:
             filename = self.get_next_filename()
         path_out = os.path.join(self.path, filename)
         Image.fromarray(img, mode='RGB').save(path_out)
-        # img.save(path_out)
         self.files.append(path_out)
         self.n = len(self.files)
 
@@ -46,7 +45,6 @@ class Dataset:
             raise StopIteration
         path = self.files[self.i]
         img = np.asarray(Image.open(path))
-        # img = Image.open(path)
         self.i += 1
         return self.i, path, img
 
