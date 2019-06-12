@@ -17,7 +17,8 @@ class CropFace(Function):
         if not boxes:
             raise CropFaceException('No face detected')
         box = boxes[0]
-        return img[max(0, box[0] - self.margin):box[2] + 1 + self.margin, max(0, box[3] - self.margin):box[1] + 1 + self.margin]
+        return img[max(0, box[0] - self.margin):box[2] + 1 + self.margin,
+               max(0, box[3] - self.margin):box[1] + 1 + self.margin]
 
     def name(self):
         return super(CropFace, self).name() + ('_%d' % self.margin)
