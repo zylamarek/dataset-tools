@@ -29,3 +29,7 @@ class Filter(Operation):
         except ZeroDivisionError:
             ratio_passed = 0.
         print('%s: %d out of %d passed through (%.2f%%)' % (self.name(), self.data_out.n, self.data_in.n, ratio_passed))
+
+    def apply_single(self, img):
+        # returns True if the image passes the filter
+        raise NotImplementedError

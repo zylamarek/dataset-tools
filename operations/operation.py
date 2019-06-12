@@ -15,6 +15,8 @@ class Operation:
     def name(self):
         return self.prepend_name + self.__class__.__name__
 
+    def apply(self):
+        raise NotImplementedError
+
     def apply_single(self, img):
-        # returns True if the image passes the filter
         raise NotImplementedError

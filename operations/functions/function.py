@@ -12,3 +12,7 @@ class Function(Operation):
             except Exception as e:
                 print('Exception while applying %s: %d, %s' % (self.name(), i, path))
                 print(str(e))
+
+    def apply_single(self, img):
+        # applies a function to img and returns the result
+        raise NotImplementedError
