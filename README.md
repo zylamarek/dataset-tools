@@ -9,14 +9,18 @@ Filters:
 - FaceDetection - finds images containing at least one face
 
 Functions:
-- CropFace - crops image to contain the face only
-- Resize
+- CropFace - crops an image to contain the face only
+- Resize - resizes an image keeping the aspect ratio
 
 ## Install
 
+```
 bash install.sh
+```
 
 ## Usage
 
-. env.sh  
-python main.py data/example1 Duplicate CropFace Resize(256)  
+```
+. env.sh
+python main.py data/example1 Duplicate CropFace Resize(256)
+```
