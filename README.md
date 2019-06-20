@@ -7,6 +7,7 @@ Apply operations (filters and functions) to images. Operations can be stacked an
 Filters:
 - Duplicate - removes duplicates
 - FaceDetection - finds images containing at least one face
+- MinDimension - removes images smaller than given threshold
 
 Functions:
 - CropFace - crops an image to contain the face only
