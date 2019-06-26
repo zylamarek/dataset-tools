@@ -49,13 +49,13 @@ class Dataset:
         return self.i, path, img
 
     def get_next_filename(self):
-        filename = '%d.png' % self.i_filename
+        filename = '%05d.png' % self.i_filename
         while os.path.exists(os.path.join(self.path, filename)):
             if self.i_filename > 1e8:
                 raise Exception('Too many iterations')
             self.i_filename += 1
             root, ext = os.path.splitext(filename)
-            filename = '%d%s' % (self.i_filename, ext)
+            filename = '%05d%s' % (self.i_filename, ext)
         return filename
 
     def __len__(self):
