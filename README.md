@@ -11,6 +11,7 @@ Filters:
 
 Functions:
 - CropFace - crops an image to contain the face only
+- NormalizeSegmentation - scales pixel values from (0, N-1) to (0, 255)
 - Resize - resizes an image keeping the aspect ratio
 
 ## Install
