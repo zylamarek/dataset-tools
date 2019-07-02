@@ -23,9 +23,9 @@ class Resize(Function):
             raise Exception('Unknown mode. Mode must be either "full" or "fill".')
         self.mode = mode
 
-        super(Resize, self).__init__(*args, **kwargs)
+        super(Resize, self).__init__(do_analysis=False, *args, **kwargs)
 
-    def apply_single(self, img):
+    def apply_single(self, img, meta):
         image = Image.fromarray(img)
 
         w, h = image.size

@@ -2,7 +2,9 @@
 
 Command line tool for batch image data processing.  
 
-Apply operations (filters and functions) to images. Operations can be stacked and applied with different parameters in one call. Easy to implement new filters and functions.
+Apply operations (filters and functions) to images. Operations can be stacked and applied with different parameters in one call. Easy to implement new filters and functions.  
+
+Images may be treated as a sequence. In such case extracted meta data can be smoothed and missing values may be filled in (functions only).
 
 Filters:
 - Duplicate - removes duplicates

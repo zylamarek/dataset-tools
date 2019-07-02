@@ -19,14 +19,19 @@ class AlignFace(Function):
 
         self.detector, self.predictor = predictor_setup()
         self.face_aligner = FaceAligner(self.predictor, desiredLeftEye=(0.3, 0.35))
-        super(AlignFace, self).__init__(*args, **kwargs)
+        super(AlignFace, self).__init__(do_analysis=True, *args, **kwargs)
 
-    def apply_single(self, img):
-        gray = np.asarray(Image.fromarray(img, mode='RGB').convert('L'))
+    def analyze_single(self, img):
         boxes = self.detector(img)
         if not boxes:
             raise AlignFaceException('No face detected')
-        return self.face_aligner.align(img, gray, boxes[0])
+        return boxes[0]
+
+    def apply_single(self, img, meta=None):
+        if meta is None:
+            raise AlignFaceException('No face detected')
+        gray = np.asarray(Image.fromarray(img, mode='RGB').convert('L'))
+        return self.face_aligner.align(img, gray, meta)
 
     def name(self):
         return super(AlignFace, self).name() + ('_%dx%d' % (self.desired_face_width, self.desired_face_height))
