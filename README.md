@@ -10,6 +10,7 @@ Filters:
 - Duplicate - removes duplicates
 - FaceDetection - finds images containing at least one face
 - MinDimension - removes images smaller than given threshold
+- MouthClosed - finds images where the first detected face has mouth closed
 
 Functions:
 - AlignFace - crops, rotates and scales face; uses Kalman smoother for sequential input
