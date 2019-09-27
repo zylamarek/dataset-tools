@@ -1,4 +1,5 @@
 from tqdm import tqdm
+import os
 
 from operations.operation import Operation
 
@@ -28,7 +29,10 @@ class Function(Operation):
         for (i, path, img), meta in tqdm(zip(self.data_in, metas), desc=self.name(), total=self.data_in.n):
             try:
                 img_out = self.apply_single(img, meta)
-                self.data_out.add_by_img(img_out)
+                if self.keep_filenames:
+                    self.data_out.add_by_img(img_out, filename=os.path.basename(path))
+                else:
+                    self.data_out.add_by_img(img_out)
             except Exception as e:
                 print('Exception while applying %s: %d, %s' % (self.name(), i, path))
                 print(str(e))

@@ -1,4 +1,5 @@
 from tqdm import tqdm
+import os
 
 from dataset import Dataset
 from operations.operation import Operation
@@ -15,9 +16,15 @@ class Filter(Operation):
         for i, path, img in tqdm(self.data_in, desc=self.name()):
             try:
                 if self.apply_single(img):
-                    self.data_out.add_by_path(path)
+                    if self.keep_filenames:
+                        self.data_out.add_by_path(path, filename=os.path.basename(path))
+                    else:
+                        self.data_out.add_by_path(path)
                 else:
-                    self.data_out_not_passed.add_by_path(path)
+                    if self.keep_filenames:
+                        self.data_out_not_passed.add_by_path(path, filename=os.path.basename(path))
+                    else:
+                        self.data_out_not_passed.add_by_path(path)
             except Exception as e:
                 print('Exception while filtering: %d, %s' % (i, path))
                 print(str(e))
