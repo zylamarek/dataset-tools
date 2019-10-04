@@ -6,11 +6,11 @@ from operations.operation import Operation
 
 
 class Filter(Operation):
-    def __init__(self, *args, **kwargs):
-        super(Filter, self).__init__(*args, **kwargs)
+    def __init__(self, cache_out=False, *args, **kwargs):
+        super(Filter, self).__init__(cache_out=cache_out, *args, **kwargs)
 
         self.path_out_not_passed = self.path_out + '_not_passed'
-        self.data_out_not_passed = Dataset(self.path_out_not_passed)
+        self.data_out_not_passed = Dataset(self.path_out_not_passed, cache=cache_out)
 
     def apply(self):
         for i, path, img in tqdm(self.data_in, desc=self.name()):

@@ -5,7 +5,7 @@ from shutil import copyfile
 
 
 class Dataset:
-    def __init__(self, path, random=False):
+    def __init__(self, path, random=False, cache=False):
         self.path = path
         if not os.path.exists(path):
             os.makedirs(path)
@@ -17,6 +17,11 @@ class Dataset:
         if random:
             np.random.shuffle(self.files)
 
+        self.cache = cache
+        self.cached_imgs = []
+        if cache:
+            self.cached_imgs = [None] * self.n
+
         self.i = 0
         self.i_filename = 0
 
@@ -27,6 +32,7 @@ class Dataset:
         copyfile(path, path_out)
         self.files.append(path_out)
         self.n = len(self.files)
+        self.cached_imgs.append(None)
 
     def add_by_img(self, img, filename=None):
         if filename is None:
@@ -35,6 +41,7 @@ class Dataset:
         Image.fromarray(img, mode='RGB').save(path_out)
         self.files.append(path_out)
         self.n = len(self.files)
+        self.cached_imgs.append(None)
 
     def __iter__(self):
         self.i = 0
@@ -44,7 +51,14 @@ class Dataset:
         if self.i >= self.n:
             raise StopIteration
         path = self.files[self.i]
-        img = np.asarray(Image.open(path))
+        if self.cache:
+            if self.cached_imgs[self.i] is None:
+                img = np.asarray(Image.open(path))
+                self.cached_imgs[self.i] = img
+            else:
+                img = self.cached_imgs[self.i]
+        else:
+            img = np.asarray(Image.open(path))
         self.i += 1
         return self.i, path, img
 

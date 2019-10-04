@@ -5,9 +5,9 @@ from .filter import Filter
 
 
 class Duplicate(Filter):
-    def __init__(self, eps=0.00001, *args, **kwargs):
+    def __init__(self, eps=0.00001, cache_out=True, *args, **kwargs):
         self.eps = float(eps)
-        super(Duplicate, self).__init__(*args, **kwargs)
+        super(Duplicate, self).__init__(cache_out=cache_out, *args, **kwargs)
 
     def apply_single(self, img):
         if self.eps == 0.:
