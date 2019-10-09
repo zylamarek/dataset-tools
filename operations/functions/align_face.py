@@ -1,9 +1,9 @@
 from PIL import Image
 import numpy as np
-from pykalman import KalmanFilter
+from imutils.face_utils.helpers import shape_to_np, FACIAL_LANDMARKS_68_IDXS
 
 from .function import Function
-from utils import predictor_setup, FaceAlignerSplit
+from utils import predictor_setup, FaceAlignerSplit, fix_meta_sequence_kalman
 
 
 class AlignFaceException(Exception):
@@ -24,40 +24,31 @@ class AlignFace(Function):
         super(AlignFace, self).__init__(do_analysis=True, *args, **kwargs)
 
     def fix_meta_sequence(self, metas):
-        measurements = np.ma.asarray(np.zeros((len(metas), 6)))
-        for i, meta in enumerate(metas):
-            if meta is not None:
-                measurements[i] = meta.flatten()
-            else:
-                measurements[i] = np.ma.masked
+        return fix_meta_sequence_kalman(metas)
 
-        means = np.mean(measurements, axis=0)
-        vars = np.var(measurements, axis=0)
-        measurements -= means
-        measurements /= vars
-
-        kf = KalmanFilter(n_dim_obs=6, n_dim_state=6,
-                          observation_covariance=1e4 * np.eye(6),
-                          transition_covariance=1e4 * np.eye(6),
-                          em_vars=['initial_state_mean', 'initial_state_covariance'])
-        kf = kf.em(measurements)
-
-        smoothed, _ = kf.smooth(measurements)
-        smoothed *= vars
-        smoothed += means
-        metas = [np.reshape(sm, (2, 3)) for sm in smoothed]
-
-        return metas
-
-    def analyze_single(self, img):
+    def analyze_single(self, img, path):
         boxes = self.detector(img)
         if not boxes:
             raise AlignFaceException('No face detected')
+
         gray = np.asarray(Image.fromarray(img, mode='RGB').convert('L'))
-        M = self.face_aligner.analyze(gray, boxes[0])
+        shape = self.predictor(gray, boxes[0])
+        shape = shape_to_np(shape)
+
+        # extract the left and right eye (x, y)-coordinates
+        (lStart, lEnd) = FACIAL_LANDMARKS_68_IDXS["left_eye"]
+        (rStart, rEnd) = FACIAL_LANDMARKS_68_IDXS["right_eye"]
+        leftEyePts = shape[lStart:lEnd]
+        rightEyePts = shape[rStart:rEnd]
+
+        # compute the center of mass for each eye
+        leftEyeCenter = leftEyePts.mean(axis=0)
+        rightEyeCenter = rightEyePts.mean(axis=0)
+
+        M = self.face_aligner.analyze((rightEyeCenter, leftEyeCenter))
         return M
 
-    def apply_single(self, img, meta=None):
+    def apply_single(self, img, path, meta=None):
         if meta is None:
             raise AlignFaceException('No face detected')
         return self.face_aligner.apply(img, meta)

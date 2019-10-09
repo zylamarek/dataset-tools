@@ -1,6 +1,3 @@
-from imutils.face_utils.helpers import FACIAL_LANDMARKS_68_IDXS
-from imutils.face_utils.helpers import FACIAL_LANDMARKS_5_IDXS
-from imutils.face_utils.helpers import shape_to_np
 from imutils.face_utils import FaceAligner
 import numpy as np
 import cv2
@@ -9,30 +6,14 @@ import cv2
 class FaceAlignerSplit(FaceAligner):
     """
     Splits FaceAligner's align method into two parts - analyze and apply.
-    Drops integer casting for higher accuracy.
+    Drops integer casting for higher accuracy. Modified to accept already
+    predicted landmarks.
 
     """
 
-    def analyze(self, gray, rect):
-        # convert the landmark (x, y)-coordinates to a NumPy array
-        shape = self.predictor(gray, rect)
-        shape = shape_to_np(shape)
-
-        # simple hack ;)
-        if (len(shape) == 68):
-            # extract the left and right eye (x, y)-coordinates
-            (lStart, lEnd) = FACIAL_LANDMARKS_68_IDXS["left_eye"]
-            (rStart, rEnd) = FACIAL_LANDMARKS_68_IDXS["right_eye"]
-        else:
-            (lStart, lEnd) = FACIAL_LANDMARKS_5_IDXS["left_eye"]
-            (rStart, rEnd) = FACIAL_LANDMARKS_5_IDXS["right_eye"]
-
-        leftEyePts = shape[lStart:lEnd]
-        rightEyePts = shape[rStart:rEnd]
-
-        # compute the center of mass for each eye
-        leftEyeCenter = leftEyePts.mean(axis=0)
-        rightEyeCenter = rightEyePts.mean(axis=0)
+    def analyze(self, eyes):
+        rightEyeCenter = eyes[0]
+        leftEyeCenter = eyes[1]
 
         # compute the angle between the eye centroids
         dY = rightEyeCenter[1] - leftEyeCenter[1]

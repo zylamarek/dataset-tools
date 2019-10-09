@@ -12,13 +12,13 @@ class CropFace(Function):
         self.margin = int(margin)
         super(CropFace, self).__init__(do_analysis=True, *args, **kwargs)
 
-    def analyze_single(self, img):
+    def analyze_single(self, img, path):
         boxes = face_recognition.face_locations(img, model='hog')
         if not boxes:
             raise CropFaceException('No face detected')
         return boxes[0]
 
-    def apply_single(self, img, meta):
+    def apply_single(self, img, path, meta):
         if meta is None:
             raise CropFaceException('No face detected')
         return img[max(0, meta[0] - self.margin):meta[2] + 1 + self.margin,

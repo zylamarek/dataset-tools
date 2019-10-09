@@ -25,7 +25,7 @@ class Resize(Function):
 
         super(Resize, self).__init__(do_analysis=False, *args, **kwargs)
 
-    def apply_single(self, img, meta):
+    def apply_single(self, img, path, meta):
         image = Image.fromarray(img)
 
         w, h = image.size

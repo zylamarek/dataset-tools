@@ -13,7 +13,8 @@ Filters:
 - MouthClosed - finds images where the first detected face has mouth closed
 
 Functions:
-- AlignFace - crops, rotates and scales face; uses Kalman smoother for sequential input
+- AlignCatFace - crops, rotates and scales face of a cat; uses Kalman smoother for sequential input
+- AlignFace - crops, rotates and scales face of a human; uses Kalman smoother for sequential input
 - CropFace - crops an image to contain the face only
 - NormalizeSegmentation - scales pixel values from (0, N-1) to (0, 255)
 - Resize - resizes an image keeping the aspect ratio

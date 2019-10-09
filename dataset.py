@@ -11,7 +11,7 @@ class Dataset:
             os.makedirs(path)
 
         self.files = [os.path.join(self.path, f) for f in os.listdir(self.path)
-                      if os.path.isfile(os.path.join(self.path, f))]
+                      if os.path.isfile(os.path.join(self.path, f)) and not f.endswith('.cat')]
         self.n = len(self.files)
 
         if random:

@@ -15,7 +15,7 @@ class Function(Operation):
             for i, path, img in tqdm(self.data_in, desc=self.name() + ' analysis'):
                 meta = None
                 try:
-                    meta = self.analyze_single(img)
+                    meta = self.analyze_single(img, path)
                 except Exception as e:
                     print('Exception while analyzing %s: %d, %s' % (self.name(), i, path))
                     print(str(e))
@@ -28,7 +28,7 @@ class Function(Operation):
 
         for (i, path, img), meta in tqdm(zip(self.data_in, metas), desc=self.name(), total=self.data_in.n):
             try:
-                img_out = self.apply_single(img, meta)
+                img_out = self.apply_single(img, path, meta)
                 if self.keep_filenames:
                     self.data_out.add_by_img(img_out, filename=os.path.basename(path))
                 else:
@@ -52,10 +52,10 @@ class Function(Operation):
 
         return metas
 
-    def analyze_single(self, img):
+    def analyze_single(self, img, path):
         # extracts meta data from img for the function to be applied
         raise NotImplementedError
 
-    def apply_single(self, img, meta):
+    def apply_single(self, img, path, meta):
         # applies a function to img using meta data and returns the result
         raise NotImplementedError

@@ -9,7 +9,7 @@ class NormalizeSegmentation(Function):
         self.n_categories = int(n_categories)
         super(NormalizeSegmentation, self).__init__(do_analysis=False, *args, **kwargs)
 
-    def apply_single(self, img, meta):
+    def apply_single(self, img, path, meta):
         image = Image.fromarray(img, mode='RGB')
         new_image = Image.eval(image, lambda x: x / (self.n_categories - 1.) * 255)
         img = np.asarray(new_image)
