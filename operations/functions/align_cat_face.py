@@ -3,9 +3,8 @@ from PIL import Image
 from .function import Function
 from utils import FaceAlignerSplit, fix_meta_sequence_kalman
 import utils.frederic_context
-from frederic.predictor import Predictor
+from frederic import Predictor, save_landmarks, load_landmarks
 from frederic.utils.general import L_EYE_LEFT, L_EYE_RIGHT
-from frederic.utils.image import load_landmarks
 
 
 class AlignFaceException(Exception):
@@ -34,7 +33,7 @@ class AlignCatFace(Function):
         except FileNotFoundError:
             img_ = Image.fromarray(img, mode='RGB')
             landmarks = self.predictor.predict(img_)
-            self.predictor.save_landmarks(landmarks, path + '.cat')
+            save_landmarks(landmarks, path + '.cat')
 
         eyes = landmarks[L_EYE_RIGHT:L_EYE_LEFT + 1]
 
