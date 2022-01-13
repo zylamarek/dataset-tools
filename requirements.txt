@@ -1,5 +1,5 @@
 numpy==1.16.0
-Pillow==5.4.1
+Pillow==9.0.0
 dlib==19.16.0
 face-recognition==1.2.3
 tqdm>=4.30.0
